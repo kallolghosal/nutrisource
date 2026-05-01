@@ -1,65 +1,65 @@
-import Image from "next/image";
+import ScreenOne from './components/ScreenOne'
+import ScreenTwo from './components/ScreenTwo'
+import ScreenThreeSeven from './components/ScreenThreeSeven'
+import ScreenEight from './components/ScreenEight'
+import SreenNine from './components/ScreenNine'
+import ScreenTen from './components/ScreenTen'
+import ScreenEleven from './components/ScreenEleven'
+import ScreenTwelve from './components/ScreenTwelve'
+import ScreenTeam from './components/ScreenTeam'
+import Noise from './components/Noise'
+import SmilingMoments from './components/SmilingMoments'
+import Contact from './components/Contact'
+import GrowWith from './components/GrowWith'
+import LogoBar from './components/LogoBar'
+import SideSlideMenu from './components/SideSlideMenu'
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+    <>
+      <LogoBar />
+      <SideSlideMenu />
+      <main id="snap-container" className="w-full">
+        <section id="home" data-menu-section="home" className="min-h-screen">
+          <ScreenOne />
+        </section>
+        <section id="screen-two" data-menu-section="home" className="min-h-screen">
+          <ScreenTwo />
+        </section>
+        <section id="screen-three-seven" data-menu-section="home">
+          <ScreenThreeSeven />
+        </section>
+        <section id="organization" data-menu-section="organization" className="min-h-screen">
+          <ScreenEight />
+        </section>
+        <section id="growth" data-menu-section="growth" className="min-h-screen">
+          <SreenNine />
+        </section>
+        <section id="capability" data-menu-section="capability" className="min-h-screen">
+          <ScreenTen />
+        </section>
+        <section id="together" data-menu-section="together" className="min-h-screen">
+          <ScreenEleven />
+        </section>
+        <section id="best" data-menu-section="best" className="min-h-screen">
+          <ScreenTwelve />
+        </section>
+        <section id="team" data-menu-section="team" className="min-h-screen">
+          <ScreenTeam />
+        </section>
+        <section id="noise" data-menu-section="noise" className="min-h-screen">
+          <Noise />
+        </section>
+        <section id="smiling-moments" data-menu-section="smiling-moments" className="min-h-screen">
+          <SmilingMoments />
+        </section>
+        <section id="contact" data-menu-section="contact" className="min-h-screen">
+          <Contact />
+        </section>
+        <section id="grow-with" data-menu-section="grow-with" className="min-h-screen">
+          <GrowWith />
+        </section>
       </main>
-    </div>
-  );
+    </>
+  )
 }
