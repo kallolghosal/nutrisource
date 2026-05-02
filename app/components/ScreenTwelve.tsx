@@ -22,18 +22,12 @@ const offeringSections = [
 ]
 
 type OfferingSectionProps = {
-    rightImageSrc: string
-    rightImageWidth: number
-    rightImageHeight: number
+    activeSection: number
 }
 
-function OfferingSection({
-    rightImageSrc,
-    rightImageWidth,
-    rightImageHeight,
-}: OfferingSectionProps) {
+function OfferingSection({ activeSection }: OfferingSectionProps) {
     return (
-        <div className="transition-all duration-500">
+        <div>
             <div className="rounded-[32px] px-6 py-8 shadow-[0_20px_48px_rgba(0,0,0,0.16)] md:px-8 md:py-10 lg:px-10">
                 <div className="flex flex-col gap-8 lg:grid lg:grid-cols-[380px_minmax(0,1fr)_320px] lg:items-center lg:gap-10">
                     <div className="flex flex-col items-center">
@@ -70,13 +64,20 @@ function OfferingSection({
                     </div>
 
                     <div className="flex flex-col items-center">
-                        <Image
-                            alt="Offerings visual"
-                            src={rightImageSrc}
-                            width={rightImageWidth}
-                            height={rightImageHeight}
-                            className="h-auto w-[150px] shrink-0 md:w-[220px]"
-                        />
+                        {/* Stack all images; crossfade by toggling opacity — no remount */}
+                        <div className="relative h-[220px] w-[150px] shrink-0 md:h-[300px] md:w-[220px]">
+                            {offeringSections.map((sec, idx) => (
+                                <Image
+                                    key={sec.id}
+                                    alt="Offerings visual"
+                                    src={sec.imageSrc}
+                                    width={sec.imageWidth}
+                                    height={sec.imageHeight}
+                                    className="absolute inset-0 h-full w-full object-contain transition-opacity duration-500"
+                                    style={{ opacity: activeSection === idx ? 1 : 0 }}
+                                />
+                            ))}
+                        </div>
                         <div className="mt-6 flex w-full max-w-[300px] flex-wrap justify-center gap-3">
                             {offeringButtons.map((label) => (
                                 <button
@@ -104,7 +105,7 @@ export default function ScreenTwelve() {
     const isSectionActive = () => {
         const rect = sectionRef.current?.getBoundingClientRect()
         if (!rect) return false
-        return rect.top < window.innerHeight * 0.9 && rect.bottom > window.innerHeight * 0.1
+        return rect.top < window.innerHeight * 0.6 && rect.bottom > window.innerHeight * 0.4
     }
 
     const canStepNow = () => Date.now() - lastStepAtRef.current > stepCooldownMs
@@ -183,15 +184,9 @@ export default function ScreenTwelve() {
 
     return (
         <div ref={sectionRef} className={`${robotoCondensed.className} min-h-screen w-full overflow-x-hidden p-4 pt-24 md:pt-28`}>
-
             <div className="mx-auto mt-10 w-full max-w-[1400px]">
                 {activeSection >= 0 ? (
-                    <OfferingSection
-                        key={offeringSections[activeSection].id}
-                        rightImageSrc={offeringSections[activeSection].imageSrc}
-                        rightImageWidth={offeringSections[activeSection].imageWidth}
-                        rightImageHeight={offeringSections[activeSection].imageHeight}
-                    />
+                    <OfferingSection activeSection={activeSection} />
                 ) : null}
             </div>
         </div>

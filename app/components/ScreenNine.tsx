@@ -1,59 +1,71 @@
 "use client"
 
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import Image from "next/image"
+import { useEffect, useRef } from "react"
 
 export default function ScreenNine() {
     const sectionRef = useRef<HTMLDivElement>(null)
+    const whitePanelRef = useRef<HTMLDivElement>(null)
+    const leftPanelRef = useRef<HTMLDivElement>(null)
+    const rightPanelRef = useRef<HTMLDivElement>(null)
     const buttonRef = useRef<HTMLButtonElement>(null)
-    // whiteTranslate: -100 = white layer fully hidden above viewport; higher values bring it down
-    const [whiteTranslate, setWhiteTranslate] = useState(-100)
-    const [scrollProgress, setScrollProgress] = useState(0)
 
     useEffect(() => {
-        const handleScroll = () => {
+        let rafId: number
+        let lastProgress = -1
+
+        const tick = () => {
             const el = sectionRef.current
-            if (!el) return
+            if (!el) { rafId = requestAnimationFrame(tick); return }
+
             const { top, height } = el.getBoundingClientRect()
             const travel = height - window.innerHeight
-            if (travel <= 0) {
-                setWhiteTranslate(-100)
-                return
+            const progress = travel > 0 ? Math.min(Math.max(-top / travel, 0), 1) : 0
+
+            if (Math.abs(progress - lastProgress) > 0.0005) {
+                lastProgress = progress
+
+                // White panel slides down as we scroll through the section
+                let targetCoverage = 62
+                const buttonEl = buttonRef.current
+                if (buttonEl) {
+                    const br = buttonEl.getBoundingClientRect()
+                    const center = br.top + br.height / 2
+                    targetCoverage = Math.min(Math.max((center / window.innerHeight) * 100, 45), 90)
+                }
+                const whiteTranslate = -100 + progress * (targetCoverage - 100 + 100)
+                if (whitePanelRef.current) {
+                    whitePanelRef.current.style.transform = `translateY(${whiteTranslate}%)`
+                }
+
+                // Side panels fade/slide in during the second half of travel
+                const panelReveal = Math.min(Math.max((progress - 0.55) / 0.25, 0), 1)
+                if (leftPanelRef.current) {
+                    leftPanelRef.current.style.opacity = String(panelReveal)
+                    leftPanelRef.current.style.transform = `translateX(${(1 - panelReveal) * -40}px)`
+                    leftPanelRef.current.style.visibility = panelReveal > 0.02 ? "visible" : "hidden"
+                }
+                if (rightPanelRef.current) {
+                    rightPanelRef.current.style.opacity = String(panelReveal)
+                    rightPanelRef.current.style.transform = `translateX(${(1 - panelReveal) * 40}px)`
+                    rightPanelRef.current.style.visibility = panelReveal > 0.02 ? "visible" : "hidden"
+                }
             }
 
-            // progress: 0 when section pins, 1 after internal scroll travel completes
-            const progress = Math.min(Math.max(-top / travel, 0), 1)
-            setScrollProgress(progress)
-
-            // Compute target white coverage from actual button position.
-            // Example: 62 means white should cover top 62% when animation completes.
-            let targetCoverage = 62
-            const buttonEl = buttonRef.current
-            if (buttonEl && window.innerHeight > 0) {
-                const buttonRect = buttonEl.getBoundingClientRect()
-                const buttonCenterInViewport = buttonRect.top + buttonRect.height / 2
-                targetCoverage = Math.min(Math.max((buttonCenterInViewport / window.innerHeight) * 100, 45), 90)
-            }
-
-            // Convert desired coverage to translateY value.
-            // -100%: hidden, -40%: top 60% visible, 0%: full white.
-            const targetTranslate = targetCoverage - 100
-            setWhiteTranslate(-100 + progress * (targetTranslate + 100))
+            rafId = requestAnimationFrame(tick)
         }
-        window.addEventListener('scroll', handleScroll, { passive: true })
-        handleScroll()
-        return () => window.removeEventListener('scroll', handleScroll)
-    }, [])
 
-    const panelReveal = Math.min(Math.max((scrollProgress - 0.55) / 0.25, 0), 1)
+        rafId = requestAnimationFrame(tick)
+        return () => cancelAnimationFrame(rafId)
+    }, [])
 
     return (
         <div ref={sectionRef} className="relative h-[220vh] w-full bg-[#7CBB0E]">
             <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden p-4">
-                {/* White layer moves down on internal scroll, revealing green at the top first. */}
                 <div
+                    ref={whitePanelRef}
                     className="absolute inset-x-0 top-0 h-full bg-white"
-                    style={{ transform: `translateY(${whiteTranslate}%)` }}
+                    style={{ transform: "translateY(-100%)" }}
                 />
 
                 <div className="relative z-10 flex w-full max-w-[1220px] flex-col items-center">
@@ -61,12 +73,9 @@ export default function ScreenNine() {
 
                     <div className="flex w-full flex-col items-center justify-center gap-6 md:flex-row md:items-end md:gap-10">
                         <div
+                            ref={leftPanelRef}
                             className="w-full max-w-[460px] rounded-2xl border border-black/10 bg-white p-6 shadow-lg md:p-7"
-                            style={{
-                                opacity: panelReveal,
-                                transform: `translateX(${(1 - panelReveal) * -40}px)`,
-                                visibility: panelReveal > 0.02 ? "visible" : "hidden",
-                            }}
+                            style={{ opacity: 0, transform: "translateX(-40px)", visibility: "hidden" }}
                         >
                             <p className="text-sm leading-6 text-black md:text-base">
                                 Our Passion@Core is to promote sustainable agriculture and empower rural livelihoods for a better future, greener planet and inclusive growth of the society.
@@ -103,12 +112,9 @@ export default function ScreenNine() {
                         />
 
                         <div
+                            ref={rightPanelRef}
                             className="w-full max-w-[460px] rounded-2xl border border-black/10 bg-white p-6 shadow-lg md:p-7"
-                            style={{
-                                opacity: panelReveal,
-                                transform: `translateX(${(1 - panelReveal) * 40}px)`,
-                                visibility: panelReveal > 0.02 ? "visible" : "hidden",
-                            }}
+                            style={{ opacity: 0, transform: "translateX(40px)", visibility: "hidden" }}
                         >
                             <p className="text-sm leading-6 text-black md:text-base">
                                 Nutrisource is built on passion and robust knowledge on Agriculture domain to deliver excellence and positive impact on rural livelihood.

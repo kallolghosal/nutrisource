@@ -156,7 +156,7 @@ export default function Footer() {
                             <p className="mt-3 text-[0.9rem] leading-relaxed text-white/60">
                                 Nutrisource India Pvt. Ltd.<br />
                                 Kolkata, West Bengal, India<br />
-                                <a href="tel:+910000000000" className="hover:text-[#7CBB0E]">+91 00000 00000</a><br />
+                                <a href="tel:03348126531" className="hover:text-[#7CBB0E]">033 4812 6531</a><br />
                                 <a href="mailto:contact@nutrisource.in" className="hover:text-[#7CBB0E]">contact@nutrisource.in</a>
                             </p>
                         </div>

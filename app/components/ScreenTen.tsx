@@ -20,7 +20,7 @@ export default function ScreenTen() {
     const isSectionActive = () => {
         const rect = sectionRef.current?.getBoundingClientRect()
         if (!rect) return false
-        return rect.top < window.innerHeight * 0.9 && rect.bottom > window.innerHeight * 0.1
+        return rect.top < window.innerHeight * 0.6 && rect.bottom > window.innerHeight * 0.4
     }
 
     const canStepNow = () => Date.now() - lastStepAtRef.current > stepCooldownMs
