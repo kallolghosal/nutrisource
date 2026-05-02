@@ -32,16 +32,16 @@ export default function Home() {
         <section id="organization" data-menu-section="organization" className="min-h-screen">
           <ScreenEight />
         </section>
-        <section id="growth" data-menu-section="growth" className="min-h-screen">
+        <section id="passion" data-menu-section="passion" className="min-h-screen">
           <SreenNine />
         </section>
         <section id="capability" data-menu-section="capability" className="min-h-screen">
           <ScreenTen />
         </section>
-        <section id="together" data-menu-section="together" className="min-h-screen">
+        <section id="offerings" data-menu-section="offerings" className="min-h-screen">
           <ScreenEleven />
         </section>
-        <section id="best" data-menu-section="best" className="min-h-screen">
+        <section id="farmsanta" data-menu-section="farmsanta" className="min-h-screen">
           <ScreenTwelve />
         </section>
         <section id="team" data-menu-section="team" className="min-h-screen">
@@ -50,13 +50,13 @@ export default function Home() {
         <section id="noise" data-menu-section="noise" className="min-h-screen">
           <Noise />
         </section>
-        <section id="smiling-moments" data-menu-section="smiling-moments" className="min-h-screen">
+        <section id="moments" data-menu-section="moments" className="min-h-screen">
           <SmilingMoments />
         </section>
-        <section id="contact" data-menu-section="contact" className="min-h-screen">
+        <section id="sayhi" data-menu-section="sayhi" className="min-h-screen">
           <Contact />
         </section>
-        <section id="grow-with" data-menu-section="grow-with" className="min-h-screen">
+        <section id="grow" data-menu-section="grow" className="min-h-screen">
           <GrowWith />
         </section>
       </main>

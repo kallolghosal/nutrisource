@@ -77,8 +77,8 @@ function OfferingSection({
                             height={rightImageHeight}
                             className="h-auto w-[150px] shrink-0 md:w-[220px]"
                         />
-                        <div className="mt-6 grid w-full max-w-[300px] grid-cols-3 gap-3">
-                            {offeringButtons.map((label, index) => (
+                        <div className="mt-6 flex w-full max-w-[300px] flex-wrap justify-center gap-3">
+                            {offeringButtons.map((label) => (
                                 <button
                                     key={label}
                                     className="rounded-full bg-green-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-green-700"
@@ -99,6 +99,7 @@ export default function ScreenTwelve() {
     const sectionRef = useRef<HTMLDivElement>(null)
     const lastStepAtRef = useRef(0)
     const [activeSection, setActiveSection] = useState(-1)
+    const stepCooldownMs = 520
 
     const isSectionActive = () => {
         const rect = sectionRef.current?.getBoundingClientRect()
@@ -106,7 +107,7 @@ export default function ScreenTwelve() {
         return rect.top < window.innerHeight * 0.9 && rect.bottom > window.innerHeight * 0.1
     }
 
-    const canStepNow = () => Date.now() - lastStepAtRef.current > 220
+    const canStepNow = () => Date.now() - lastStepAtRef.current > stepCooldownMs
 
     useEffect(() => {
         const onScroll = () => {

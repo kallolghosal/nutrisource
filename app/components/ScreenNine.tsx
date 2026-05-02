@@ -61,7 +61,7 @@ export default function ScreenNine() {
 
                     <div className="flex w-full flex-col items-center justify-center gap-6 md:flex-row md:items-end md:gap-10">
                         <div
-                            className="w-full max-w-[560px] rounded-2xl border border-black/10 bg-white p-6 shadow-lg md:p-7"
+                            className="w-full max-w-[460px] rounded-2xl border border-black/10 bg-white p-6 shadow-lg md:p-7"
                             style={{
                                 opacity: panelReveal,
                                 transform: `translateX(${(1 - panelReveal) * -40}px)`,
@@ -96,14 +96,14 @@ export default function ScreenNine() {
 
                         <Image
                             alt="Santa"
-                            className="pointer-events-none h-auto w-[360px] md:w-[460px]"
+                            className="pointer-events-none h-auto w-[60px] md:w-[460px]"
                             height={452}
                             src="/img/home-santa.png"
                             width={370}
                         />
 
                         <div
-                            className="w-full max-w-[560px] rounded-2xl border border-black/10 bg-white p-6 shadow-lg md:p-7"
+                            className="w-full max-w-[460px] rounded-2xl border border-black/10 bg-white p-6 shadow-lg md:p-7"
                             style={{
                                 opacity: panelReveal,
                                 transform: `translateX(${(1 - panelReveal) * 40}px)`,

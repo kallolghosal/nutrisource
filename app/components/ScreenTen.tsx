@@ -15,6 +15,7 @@ export default function ScreenTen() {
     const sectionRef = useRef<HTMLDivElement>(null)
     const [stage, setStage] = useState(0)
     const lastStepAtRef = useRef(0)
+    const stepCooldownMs = 520
 
     const isSectionActive = () => {
         const rect = sectionRef.current?.getBoundingClientRect()
@@ -22,7 +23,7 @@ export default function ScreenTen() {
         return rect.top < window.innerHeight * 0.9 && rect.bottom > window.innerHeight * 0.1
     }
 
-    const canStepNow = () => Date.now() - lastStepAtRef.current > 220
+    const canStepNow = () => Date.now() - lastStepAtRef.current > stepCooldownMs
 
     useEffect(() => {
         const onScroll = () => {

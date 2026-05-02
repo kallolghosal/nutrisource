@@ -14,9 +14,9 @@ export default function LenisProvider({ children }: { children: React.ReactNode 
 
     useEffect(() => {
         const instance = new Lenis({
-            lerp: 0.14,
+            lerp: 0.09,
             smoothWheel: true,
-            wheelMultiplier: 1.2,
+            wheelMultiplier: 0.9,
         })
 
         setLenis(instance)
@@ -105,6 +105,7 @@ export default function LenisProvider({ children }: { children: React.ReactNode 
         }
 
         const onWheel = (event: WheelEvent) => {
+            if (event.defaultPrevented) return
             if (Math.abs(event.deltaY) < 10) return
             if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return
 
@@ -114,6 +115,14 @@ export default function LenisProvider({ children }: { children: React.ReactNode 
         }
 
         const onKeyDown = (event: KeyboardEvent) => {
+            if (event.defaultPrevented) return
+            const target = event.target as HTMLElement | null
+            if (target) {
+                const tag = target.tagName
+                const isEditable = target.isContentEditable || tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT"
+                if (isEditable) return
+            }
+
             if (event.key === "ArrowDown" || event.key === "PageDown") {
                 const handled = moveSection(1)
                 if (handled) event.preventDefault()

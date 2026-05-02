@@ -17,12 +17,26 @@ const menuItems = [
   { label: 'Grow With Us', icon: 'GW', sectionId: 'grow' },
 ]
 
-/** Scroll the snap container to the target section. */
+type LenisLike = {
+  scrollTo: (target: HTMLElement | number, options?: { duration?: number }) => void
+}
+
+function getLenis() {
+  return (window as unknown as { __lenis?: LenisLike }).__lenis
+}
+
+/** Scroll the page to the target section. */
 function scrollToSection(sectionId: string) {
-  const container = document.getElementById('snap-container')
   const section = document.getElementById(sectionId)
-  if (!container || !section) return
-  container.scrollTo({ top: section.offsetTop, behavior: 'smooth' })
+  if (!section) return
+
+  const lenis = getLenis()
+  if (lenis) {
+    lenis.scrollTo(section, { duration: 1 })
+    return
+  }
+
+  window.scrollTo({ top: section.offsetTop, behavior: 'smooth' })
 }
 
 type MenuListProps = {
@@ -80,14 +94,11 @@ export default function SideSlideMenu() {
   const [activeSection, setActiveSection] = useState('home')
 
   useEffect(() => {
-    const container = document.getElementById('snap-container')
-    if (!container) return
-
-    const sections = Array.from(container.querySelectorAll<HTMLElement>('section[data-menu-section]'))
+    const sections = Array.from(document.querySelectorAll<HTMLElement>('section[data-menu-section]'))
     if (sections.length === 0) return
 
     const updateActiveSection = () => {
-      const viewportCenter = container.scrollTop + container.clientHeight / 2
+      const viewportCenter = window.scrollY + window.innerHeight / 2
 
       const closestSection = sections.reduce((closest, section) => {
         const sectionCenter = section.offsetTop + section.offsetHeight / 2
@@ -102,10 +113,10 @@ export default function SideSlideMenu() {
     }
 
     updateActiveSection()
-    container.addEventListener('scroll', updateActiveSection, { passive: true })
+    window.addEventListener('scroll', updateActiveSection, { passive: true })
 
     return () => {
-      container.removeEventListener('scroll', updateActiveSection)
+      window.removeEventListener('scroll', updateActiveSection)
     }
   }, [])
 
@@ -113,18 +124,16 @@ export default function SideSlideMenu() {
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (!['PageDown', 'PageUp', 'ArrowDown', 'ArrowUp'].includes(e.key)) return
+      if (e.defaultPrevented) return
       const tag = (e.target as HTMLElement)?.tagName
-      if (tag === 'INPUT' || tag === 'TEXTAREA') return
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return
 
-      const container = document.getElementById('snap-container')
-      if (!container) return
-
-      const sections = Array.from(container.querySelectorAll<HTMLElement>('section[data-menu-section]'))
+      const sections = Array.from(document.querySelectorAll<HTMLElement>('section[data-menu-section]'))
       if (sections.length === 0) return
 
       e.preventDefault()
 
-      const scrollTop = container.scrollTop
+      const scrollTop = window.scrollY
       const currentIndex = sections.reduce((closestIndex, section, index) => {
         const closestDistance = Math.abs(sections[closestIndex].offsetTop - scrollTop)
         const currentDistance = Math.abs(section.offsetTop - scrollTop)
@@ -139,7 +148,13 @@ export default function SideSlideMenu() {
       const nextSection = sections[nextIndex]
       if (!nextSection || nextIndex === currentIndex) return
 
-      container.scrollTo({ top: nextSection.offsetTop, behavior: 'smooth' })
+      const lenis = getLenis()
+      if (lenis) {
+        lenis.scrollTo(nextSection, { duration: 1 })
+        return
+      }
+
+      window.scrollTo({ top: nextSection.offsetTop, behavior: 'smooth' })
     }
 
     window.addEventListener('keydown', handleKey)

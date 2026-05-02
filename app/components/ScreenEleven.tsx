@@ -64,6 +64,8 @@ export default function ScreenEleven() {
     const lastStepAtRef = useRef(0)
     const [cardStage, setCardStage] = useState(0)
     const maxCardStage = 3
+    // Cooldown must exceed card CSS transition duration (500ms) to prevent jerk on rapid input
+    const stepCooldownMs = 520
 
     const isSectionActive = () => {
         const rect = sectionRef.current?.getBoundingClientRect()
@@ -71,7 +73,7 @@ export default function ScreenEleven() {
         return rect.top < window.innerHeight * 0.9 && rect.bottom > window.innerHeight * 0.1
     }
 
-    const canStepNow = () => Date.now() - lastStepAtRef.current > 220
+    const canStepNow = () => Date.now() - lastStepAtRef.current > stepCooldownMs
 
     useEffect(() => {
         const onWheel = (event: WheelEvent) => {
@@ -199,7 +201,7 @@ export default function ScreenEleven() {
 
                     <OfferingsCard
                         title="TECHNOLOGY"
-                        subtitle="best in class digital  platform and technology interface"
+                        subtitle="best in class digital platform and technology interface"
                         imageSrc="/img/offerings4.png"
                         imageWidth={206}
                         imageHeight={335}

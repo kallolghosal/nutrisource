@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max)
 
@@ -19,197 +19,79 @@ const fadeInOut = (progress: number, inStart: number, inEnd: number, outEnd: num
 
 export default function ScreenThreeSeven() {
     const sectionRef = useRef<HTMLDivElement>(null)
-    const [progress, setProgress] = useState(0)
-    const progressRef = useRef(0)
-    const advancingRef = useRef(false)
-    const inputLockRef = useRef(false)
+    const cloud1Ref = useRef<HTMLDivElement>(null)
+    const cloud2Ref = useRef<HTMLDivElement>(null)
+    const cloud3Ref = useRef<HTMLDivElement>(null)
+    const cloud4Ref = useRef<HTMLDivElement>(null)
+    const growRef = useRef<HTMLSpanElement>(null)
+    const withRef = useRef<HTMLSpanElement>(null)
+    const growthRef = useRef<HTMLSpanElement>(null)
+    const cropRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        progressRef.current = progress
-    }, [progress])
+        let rafId: number
+        let lastProgress = -1
 
-    useEffect(() => {
-        const updateProgress = () => {
+        const applyProgress = (progress: number) => {
+            if (cloud1Ref.current) cloud1Ref.current.style.opacity = String(1 - clamp(progress / 0.28, 0, 1))
+            if (cloud2Ref.current) cloud2Ref.current.style.opacity = String(fadeInOut(progress, 0.16, 0.34, 0.56))
+            if (cloud3Ref.current) cloud3Ref.current.style.opacity = String(fadeInOut(progress, 0.44, 0.62, 0.82))
+            if (cloud4Ref.current) cloud4Ref.current.style.opacity = String(fadeIn(progress, 0.76, 0.94))
+            if (growRef.current) growRef.current.style.opacity = String(fadeIn(progress, 0.22, 0.38))
+            if (withRef.current) withRef.current.style.opacity = String(fadeIn(progress, 0.48, 0.64))
+            if (growthRef.current) growthRef.current.style.opacity = String(fadeIn(progress, 0.74, 0.9))
+            if (cropRef.current) {
+                const cropOpacity = fadeIn(progress, 0.14, 0.34)
+                const cropScale = 0.86 + 0.14 * clamp((progress - 0.14) / 0.2, 0, 1)
+                cropRef.current.style.opacity = String(cropOpacity)
+                cropRef.current.style.transform = `scale(${cropScale})`
+            }
+        }
+
+        const tick = () => {
             if (!sectionRef.current) return
             const rect = sectionRef.current.getBoundingClientRect()
             const travelDistance = rect.height - window.innerHeight
-            if (travelDistance <= 0) {
-                setProgress(0)
-                return
+            const progress = travelDistance > 0 ? clamp(-rect.top / travelDistance, 0, 1) : 0
+
+            // Only update DOM if progress actually changed
+            if (Math.abs(progress - lastProgress) > 0.0001) {
+                applyProgress(progress)
+                lastProgress = progress
             }
-            const next = clamp(-rect.top / travelDistance, 0, 1)
-            setProgress(next)
+            rafId = requestAnimationFrame(tick)
         }
 
-        updateProgress()
-        window.addEventListener("scroll", updateProgress, { passive: true })
-        window.addEventListener("resize", updateProgress)
+        rafId = requestAnimationFrame(tick)
 
-        return () => {
-            window.removeEventListener("scroll", updateProgress)
-            window.removeEventListener("resize", updateProgress)
-        }
+        return () => cancelAnimationFrame(rafId)
     }, [])
-
-    useEffect(() => {
-        const nextSection = document.getElementById("organization")
-        const prevSection = document.getElementById("screen-two")
-        if (!nextSection) return
-
-        const isSectionActive = () => {
-            const rect = sectionRef.current?.getBoundingClientRect()
-            if (!rect) return false
-            return rect.top < window.innerHeight && rect.bottom > 0
-        }
-
-        const lockInput = () => {
-            inputLockRef.current = true
-            window.setTimeout(() => {
-                inputLockRef.current = false
-            }, 420)
-        }
-
-        const advanceToNextSection = () => {
-            if (!nextSection || advancingRef.current) return
-            advancingRef.current = true
-            const l = (window as unknown as Record<string, unknown>).__lenis as { scrollTo: (el: Element, opts?: object) => void } | undefined
-            if (l) {
-                l.scrollTo(nextSection, { duration: 0.75 })
-            } else {
-                nextSection.scrollIntoView({ behavior: "smooth", block: "start" })
-            }
-            window.setTimeout(() => {
-                advancingRef.current = false
-            }, 500)
-            lockInput()
-        }
-
-        const retreatToPrevSection = () => {
-            if (!prevSection || advancingRef.current) return
-            advancingRef.current = true
-            const l = (window as unknown as Record<string, unknown>).__lenis as { scrollTo: (el: Element, opts?: object) => void } | undefined
-            if (l) {
-                l.scrollTo(prevSection, { duration: 0.7 })
-            } else {
-                prevSection.scrollIntoView({ behavior: "smooth", block: "start" })
-            }
-            window.setTimeout(() => {
-                advancingRef.current = false
-            }, 500)
-            lockInput()
-        }
-
-        const stepWithinSection = (direction: 1 | -1) => {
-            const l = (window as unknown as Record<string, unknown>).__lenis as {
-                scrollTo: (target: number, opts?: object) => void
-                scroll: number
-            } | undefined
-
-            const step = window.innerHeight * 0.9
-            if (l) {
-                l.scrollTo(l.scroll + direction * step, { duration: 0.55 })
-            } else {
-                window.scrollBy({ top: direction * step, behavior: "smooth" })
-            }
-            lockInput()
-        }
-
-        const onKeyDown = (event: KeyboardEvent) => {
-            if (!isSectionActive()) return
-            if (inputLockRef.current || advancingRef.current) {
-                event.preventDefault()
-                return
-            }
-
-            const isDown = event.key === "PageDown" || event.key === "ArrowDown"
-            const isUp = event.key === "PageUp" || event.key === "ArrowUp"
-            if (!isDown && !isUp) return
-            event.preventDefault()
-
-            if (isDown) {
-                if (progressRef.current < 0.995) {
-                    stepWithinSection(1)
-                    return
-                }
-                advanceToNextSection()
-                return
-            }
-
-            if (progressRef.current > 0.01) {
-                stepWithinSection(-1)
-                return
-            }
-            retreatToPrevSection()
-        }
-
-        const onWheel = (event: WheelEvent) => {
-            if (!isSectionActive()) return
-            event.preventDefault()
-            if (inputLockRef.current || advancingRef.current) return
-
-            const isDown = event.deltaY > 0
-
-            if (isDown) {
-                if (progressRef.current < 0.995) {
-                    stepWithinSection(1)
-                    return
-                }
-                advanceToNextSection()
-                return
-            }
-
-            if (progressRef.current > 0.01) {
-                stepWithinSection(-1)
-                return
-            }
-            retreatToPrevSection()
-        }
-
-        window.addEventListener("keydown", onKeyDown)
-        window.addEventListener("wheel", onWheel, { passive: false })
-
-        return () => {
-            window.removeEventListener("keydown", onKeyDown)
-            window.removeEventListener("wheel", onWheel)
-        }
-    }, [])
-
-    const cloud1Opacity = 1 - clamp(progress / 0.28, 0, 1)
-    const cloud2Opacity = fadeInOut(progress, 0.16, 0.34, 0.56)
-    const cloud3Opacity = fadeInOut(progress, 0.44, 0.62, 0.82)
-    const cloud4Opacity = fadeIn(progress, 0.76, 0.94)
-
-    const growOpacity = fadeIn(progress, 0.22, 0.38)
-    const withOpacity = fadeIn(progress, 0.48, 0.64)
-    const growthOpacity = fadeIn(progress, 0.74, 0.9)
-
-    const cropOpacity = fadeIn(progress, 0.14, 0.34)
-    const cropScale = 0.86 + 0.14 * clamp((progress - 0.14) / 0.2, 0, 1)
 
     return (
         <div ref={sectionRef} className="relative h-[500vh] w-full">
             <div className="sticky top-0 h-screen overflow-hidden">
-                <div className="absolute inset-0 bg-[url('/img/bg-cloud1.png')] bg-cover bg-center" style={{ opacity: cloud1Opacity }} />
-                <div className="absolute inset-0 bg-[url('/img/bg-cloud2.png')] bg-cover bg-center" style={{ opacity: cloud2Opacity }} />
-                <div className="absolute inset-0 bg-[url('/img/bg-cloud3.png')] bg-cover bg-center" style={{ opacity: cloud3Opacity }} />
-                <div className="absolute inset-0 bg-[url('/img/bg-cloud4.png')] bg-cover bg-center" style={{ opacity: cloud4Opacity }} />
+                <div ref={cloud1Ref} className="absolute inset-0 bg-[url('/img/bg-cloud1.png')] bg-cover bg-center" />
+                <div ref={cloud2Ref} className="absolute inset-0 bg-[url('/img/bg-cloud2.png')] bg-cover bg-center" style={{ opacity: 0 }} />
+                <div ref={cloud3Ref} className="absolute inset-0 bg-[url('/img/bg-cloud3.png')] bg-cover bg-center" style={{ opacity: 0 }} />
+                <div ref={cloud4Ref} className="absolute inset-0 bg-[url('/img/bg-cloud4.png')] bg-cover bg-center" style={{ opacity: 0 }} />
 
                 <div className="relative z-10 flex h-full w-full flex-col items-center justify-center gap-5 px-4 pt-24 md:pt-28">
                     <h1 className="mx-8 text-center text-4xl font-bold text-black md:text-8xl">
-                        <span style={{ opacity: growOpacity }}>Grow</span>{" "}
-                        <span style={{ opacity: withOpacity }}>With</span>{" "}
-                        <span style={{ opacity: growthOpacity }}>Growth</span>
+                        <span ref={growRef} style={{ opacity: 0 }}>Grow</span>{" "}
+                        <span ref={withRef} style={{ opacity: 0 }}>With</span>{" "}
+                        <span ref={growthRef} style={{ opacity: 0 }}>Growth</span>
                     </h1>
 
-                    <Image
-                        src="/img/crop1.png"
-                        alt="Crop Image"
-                        width={286}
-                        height={150}
-                        className="h-auto w-[286px]"
-                        style={{ opacity: cropOpacity, transform: `scale(${cropScale})` }}
-                        priority
-                    />
+                    <div ref={cropRef} style={{ opacity: 0, transform: "scale(0.86)" }}>
+                        <Image
+                            src="/img/crop1.png"
+                            alt="Crop Image"
+                            width={286}
+                            height={150}
+                            className="h-auto w-[286px]"
+                            priority
+                        />
+                    </div>
                 </div>
             </div>
         </div>

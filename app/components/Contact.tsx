@@ -28,34 +28,18 @@ function ContactInfoIcon({ type }: { type: 'phone' | 'mail' }) {
 
 function MapCard() {
     return (
-        <div className="relative h-[390px] overflow-hidden rounded-[4px] bg-[#F5F5F5]">
-            <div className="absolute inset-0 opacity-90">
-                <div className="absolute left-[-8%] top-[6%] h-[10px] w-[68%] rotate-[82deg] rounded-full bg-white/95" />
-                <div className="absolute left-[18%] top-[24%] h-[9px] w-[66%] rotate-[-7deg] rounded-full bg-white/95" />
-                <div className="absolute left-[34%] top-[10%] h-[8px] w-[32%] rounded-full bg-white/95" />
-                <div className="absolute left-[46%] top-[16%] h-[8px] w-[18%] rotate-[11deg] rounded-full bg-white/95" />
-                <div className="absolute right-[7%] top-[-2%] h-[10px] w-[66%] rotate-[95deg] rounded-full bg-white/95" />
-                <div className="absolute left-[52%] top-[47%] h-[7px] w-[58%] rotate-[-6deg] rounded-full bg-white/95" />
-                <div className="absolute left-[-10%] top-[70%] h-[11px] w-[112%] rotate-[-10deg] rounded-full bg-white/95" />
-                <div className="absolute left-[19%] top-[65%] h-[9px] w-[36%] rotate-[77deg] rounded-full bg-white/95" />
-                <div className="absolute left-[66%] top-[54%] h-[7px] w-[55%] rotate-[82deg] rounded-full bg-white/95" />
-                <div className="absolute left-[22%] top-[90%] h-[8px] w-[72%] rotate-[-10deg] rounded-full bg-white/95" />
-                <div className="absolute left-[58%] top-[2%] h-full w-px bg-[#D4D4D4]" />
-                <div className="absolute left-[46%] top-0 h-full w-px bg-[#E2E2E2]" />
-                <div className="absolute top-[56%] h-px w-full bg-[#DADADA]" />
-                <div className="absolute top-[73%] h-px w-full bg-[#E2E2E2]" />
-            </div>
-
-            <div className="absolute left-1/2 top-[43%] flex -translate-x-1/2 flex-col items-center">
-                <div className="rounded-xl bg-[#FF7D2C] px-6 py-2 text-sm font-medium tracking-wide text-white shadow-sm">
-                    HEAD OFFICE
-                </div>
-                <div className="mt-2 text-[#FF7D2C]">
-                    <svg viewBox="0 0 24 24" className="h-8 w-8 fill-current">
-                        <path d="M12 22s7-7.33 7-13a7 7 0 1 0-14 0c0 5.67 7 13 7 13Zm0-9.5A2.5 2.5 0 1 1 12 7a2.5 2.5 0 0 1 0 5.5Z" />
-                    </svg>
-                </div>
-            </div>
+        <div className="relative h-[390px] overflow-hidden rounded-[4px]">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5183.827728938785!2d88.459606!3d22.621420999999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a02757c1463c3bd%3A0xa5296af0efb559f2!2sNutrisource%20India%20Pvt.%20Ltd.!5e1!3m2!1sen!2sin!4v1777698429358!5m2!1sen!2sin"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Nutrisource India Head Office"
+                className="absolute inset-0 h-full w-full"
+            />
         </div>
     )
 }
@@ -72,16 +56,16 @@ export default function Contact() {
                             <div className="flex items-center gap-4">
                                 <ContactInfoIcon type="phone" />
                                 <div>
-                                    <h3 className="text-[2rem] font-semibold leading-none text-[#2D2D2D]">Call</h3>
-                                    <p className="mt-2 text-[1.15rem] text-[#666666]">+91 00000 00000</p>
+                                    <h4 className="text-[1rem] font-semibold leading-none text-[#2D2D2D]">Call</h4>
+                                    <p className="mt-2 text-[1rem] text-[#666666]">+91 00000 00000</p>
                                 </div>
                             </div>
 
                             <div className="flex items-center gap-4">
                                 <ContactInfoIcon type="mail" />
                                 <div>
-                                    <h3 className="text-[2rem] font-semibold leading-none text-[#2D2D2D]">Email</h3>
-                                    <p className="mt-2 text-[1.15rem] text-[#666666]">contact@nutrisource.in</p>
+                                    <h4 className="text-[1rem] font-semibold leading-none text-[#2D2D2D]">Email</h4>
+                                    <p className="mt-2 text-[1rem] text-[#666666]">contact@nutrisource.in</p>
                                 </div>
                             </div>
                         </div>
@@ -106,12 +90,14 @@ export default function Contact() {
                                 rows={5}
                                 className="w-full rounded-[20px] bg-[#F9F9F9] px-5 py-5 text-[1.25rem] text-[#7A7A7A] outline-none placeholder:text-[#7A7A7A]"
                             />
-                            <button
-                                type="button"
-                                className="h-[72px] w-full rounded-[20px] bg-[#00A211] text-[2rem] font-medium text-white transition hover:bg-[#00910f]"
-                            >
-                                Send now
-                            </button>
+                            <div className="flex justify-center">
+                                <button
+                                    type="button"
+                                    className="h-[72px] w-full max-w-[320px] rounded-[20px] bg-[#00A211] text-[2rem] font-medium text-white transition hover:bg-[#00910f]"
+                                >
+                                    Send now
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>
