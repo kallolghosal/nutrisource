@@ -1,3 +1,4 @@
+import Footer from './components/Footer'
 import ScreenOne from './components/ScreenOne'
 import ScreenTwo from './components/ScreenTwo'
 import ScreenThreeSeven from './components/ScreenThreeSeven'
@@ -60,6 +61,7 @@ export default function Home() {
           <GrowWith />
         </section>
       </main>
+      <Footer />
     </>
   )
 }
